@@ -313,7 +313,7 @@ int CPGM::SaveFile_ASCII(char *FileName)
 		for(int j = 0; j < BytesPerLine; ++j)
 			fprintf(file, "%4d", (unsigned char)(*lpTemp++));
 		
-		fprintf(file, "%\n");
+		fprintf(file, "\n");
 	}
 	fclose(file);
 

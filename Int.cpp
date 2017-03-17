@@ -267,12 +267,12 @@ int CInt::get_int_hdr( FILE *fp, INT_HDR *hdr)
 			}
 			elif ( !COMPARE("resolution:",s1) )  
 			{
-				x = sscanf( s2, "%g", &((*hdr).resolution));
+				x = sscanf( s2, "%lf", &((*hdr).resolution));
 				assert( 1 == x);  
 			}
 			elif ( !COMPARE("aspect:",s1) )  
 			{
-				x = sscanf( s2, "%g", &((*hdr).aspect));
+				x = sscanf( s2, "%lf", &((*hdr).aspect));
 				assert( 1 == x);  
 			}
 			else
