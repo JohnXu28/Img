@@ -8,7 +8,7 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-#include <Tiff_STL3\Tiff_STL3.h>
+#include <Tiff_STL3\Src\Tiff_STL3.h>
 #include <Straw\Process\Process.h>
 #include <assert.h>
 //using namespace AV_Tiff_STL2;

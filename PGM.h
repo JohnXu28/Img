@@ -1,5 +1,5 @@
 #pragma once
-#include <Tiff_STL3\Tiff_STL3.h>
+#include <Tiff_STL3\Src\Tiff_STL3.h>
 
 enum PGM_format
 {
