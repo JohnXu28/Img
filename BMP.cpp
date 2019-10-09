@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include <Sysinfo\SysInfo.h>
 #include <Sysinfo\Config.h>
 #include <Sysinfo\CTime.h>
