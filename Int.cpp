@@ -79,7 +79,7 @@ int CInt::SaveFile(LPCTSTR FileName)
 	if (file == NULL)
 	{
 		cout << "File Open Err : " << FileName;
-		return FileOpenErr;
+		return -1;
 	}
 	put_int_hdr(file, &hdr, NULL);
 	WriteIntImage(file);
