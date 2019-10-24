@@ -62,8 +62,8 @@ int BMP::ReadTiff(char *Input)
 	m_Info.biWidth = Width;
 	m_Info.biHeight = Length;
 	m_Info.biSizeImage = SizeImage;
-	m_Info.biXPelsPerMeter = (LONG)(Resolution * 100 / 2.54);
-	m_Info.biYPelsPerMeter = (LONG)(Resolution * 100 / 2.54);
+	m_Info.biXPelsPerMeter = (LONG)((double)Resolution * 100 / 2.54);
+	m_Info.biYPelsPerMeter = (LONG)((double)Resolution * 100 / 2.54);
 
 	if (Samples == 3)
 	{//Color
