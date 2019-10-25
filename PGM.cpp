@@ -36,7 +36,7 @@ looks like the following:
 CPGM::CPGM(void)
 {
 	m_lpTiff = NULL;
-	m_format = PGM_UnKnown;
+	m_format = PGM::P0;
 }
 
 CPGM::~CPGM(void)
@@ -56,17 +56,17 @@ int CPGM::ReadTiff(char *Input)
 	if (m_lpTiff->GetTagValue(SamplesPerPixel) == 1)
 	{
 		if (m_lpTiff->GetTagValue(BitsPerSample) == 1)
-			m_format = P4;//LineArt
+			m_format = PGM::P4;//LineArt
 		else
-			m_format = P5;//Gray
+			m_format = PGM::P5;//Gray
 	}
 	else if (m_lpTiff->GetTagValue(SamplesPerPixel) == 3)
-		m_format = P6; //RGB
+		m_format = PGM::P6; //RGB
 	else if (m_lpTiff->GetTagValue(SamplesPerPixel) == 4)
 #ifdef CMYK_P7
-		m_format = P7; //CMYK
+		m_format = PGM::P7; //CMYK
 #else
-		m_format = P8; //CMYK
+		m_format = PGM::P8; //CMYK
 #endif //CMYK_P7
 
 	m_FileName = Input;
@@ -99,45 +99,45 @@ int CPGM::ReadFile(char *Input)
 	if (tempstr.compare("P1") == 0)
 	{//1bit/pixel b&w image, ASCII encoded
 		samplesPerPixel = 1;//Gray 8 bits
-		m_format = P1;
+		m_format = PGM::P1;
 	}
 	else if (tempstr.compare("P2") == 0)
 	{//8bit/pixel gray image, ASCII encoded
 		samplesPerPixel = 1;//Gray 8 bits
-		m_format = P2;
+		m_format = PGM::P2;
 	}
 	else if (tempstr.compare("P3") == 0)
 	{//8bit/pixel RGB image, ASCII encoded
 		samplesPerPixel = 3;//Gray 8 bits
-		m_format = P3;
+		m_format = PGM::P3;
 	}
 	else if (tempstr.compare("P4") == 0)
 	{//1bit/pixel b&w image, binary encoded
 		samplesPerPixel = 1;
-		m_format = P4;
+		m_format = PGM::P4;
 	}
 	else if (tempstr.compare("P5") == 0)
 	{//Gray 8 bits
 		samplesPerPixel = 1;
-		m_format = P5;
+		m_format = PGM::P5;
 	}
 	else if (tempstr.compare("P6") == 0)
 	{//RGB  8 bits
 		samplesPerPixel = 3;
-		m_format = P6;
+		m_format = PGM::P6;
 	}
 	else if (tempstr.compare("P7") == 0)
 	{//CMYK 8 bits
 		samplesPerPixel = 4;
-		m_format = P7;
+		m_format = PGM::P7;
 	}
 	else if (tempstr.compare("P8") == 0)
 	{//CMYK 8 bits
 		samplesPerPixel = 4;
-		m_format = P8;
+		m_format = PGM::P8;
 	}
 	else
-		m_format = PGM_UnKnown;
+		m_format = PGM::P0;
 
 	while (1)
 	{
@@ -163,26 +163,27 @@ int CPGM::ReadFile(char *Input)
 	this->m_lpTiff->CreateNew(Width, Length, 600, samplesPerPixel, bitsPerSample);
 
 	int TotalBytes = (Width * Length * samplesPerPixel * bitsPerSample) >> 3;
-	if ((m_format == P1) || (m_format == P2) || (m_format == P3))
+	if ((m_format == PGM::P1) || (m_format == PGM::P2) || (m_format == PGM::P3))
 	{//ASCII
 		LPBYTE lpTemp = m_lpTiff->GetImageBuf();
 		TimeCount time;
 		time.Start();
 
-		if ((m_format == P2) && (Range == 1))
+		if ((m_format == PGM::P2) && (Range == 1))
 		{//LineArt 
-			LPWORD lwBuf = new WORD[Width];
+			int BufSize = Width * 2;
+			LPBYTE lpBuf = new BYTE[Width];
 			for (int i = 0; i < Length; i++)
 			{
-				fin.read((char*)lwBuf, Width * 2);
-				LPWORD lwTemp = lwBuf;
+				fin.read((char*)lpBuf, BufSize);
+				LPWORD lwTemp = (LPWORD)lpBuf;
 				for (int j = 0; j < Width; j++)
 					if (*(lwTemp++) & 0x1)
 						*(lpTemp++) = 0;
 					else
 						*(lpTemp++) = 255;
 			}
-			delete[]lwBuf;
+			delete[]lpBuf;
 		}
 		else
 		{
@@ -244,7 +245,7 @@ int CPGM::SaveFile(char *FileName)
 	fprintf(file, Format[(int)m_format]);
 	fprintf(file, "#Orignal Image : %s\n", m_FileName.c_str());
 
-	if (m_format == P7)
+	if (m_format == PGM::P7)
 	{
 		fprintf(file, "WIDTH %d\n", Width);
 		fprintf(file, "HEIGHT %d\n", Length);
@@ -285,16 +286,16 @@ int CPGM::SaveFile_ASCII(char *FileName)
 	char *Format[9] = { "UnKnown\n","P1\n", "P2\n", "P3\n", "P4\n", "P5\n", "P6\n", "P7\n", "P8\n" };
 
 	//Color RGB
-	if (m_format == P4)
-		m_format = P1;
+	if (m_format == PGM::P4)
+		m_format = PGM::P1;
 
 	//Gray
-	if (m_format == P5)
-		m_format = P2;
+	if (m_format == PGM::P5)
+		m_format = PGM::P2;
 
 	//Color RGB
-	if (m_format == P6)
-		m_format = P3;
+	if (m_format == PGM::P6)
+		m_format = PGM::P3;
 
 	FILE *file = fopen(FileName, "wb+");
 	fprintf(file, Format[(int)m_format]);

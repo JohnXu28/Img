@@ -74,7 +74,7 @@ int CInt::main()
 
 int CInt::SaveFile(LPCTSTR FileName)
 {
-	FILE *file;
+	FILE* file;
 	file = fopen(FileName, "wb+");
 	if (file == NULL)
 	{
@@ -89,7 +89,7 @@ int CInt::SaveFile(LPCTSTR FileName)
 
 int CInt::ReadFile(LPCTSTR FileName)
 {
-	FILE *file;
+	FILE* file;
 	file = fopen(FileName, "rb+");
 	get_int_hdr(file, &hdr);
 	m_Tiff.CreateNew(hdr.pixels, hdr.scanlines, 300, hdr.imageparts, hdr.bits_per_sample, 1);
@@ -119,14 +119,13 @@ int CInt::ReadTiff(LPCTSTR FileName)
 }
 
 
-int CInt::get_int_hdr(FILE *fp, INT_HDR *hdr)
+int CInt::get_int_hdr(FILE* fp, INT_HDR* hdr)
 {
-	enum _clause { BODY, ID, ENCODING, RASTER, PHOTOMETRY, ORIGIN };
-	typedef enum _clause CLAUSE;
-	CLAUSE          clause = BODY;
-	int             x,
-		rc;
-	char            buf[81], s1[81], s2[81], *p, *q;
+	enum class CLAUSE { BODY, ID, ENCODING, RASTER, PHOTOMETRY, ORIGIN };
+
+	CLAUSE clause = CLAUSE::BODY;
+	int x, rc;
+	char buf[81], s1[81], s2[81], * p, * q;
 
 	if (!hdr)  hdr = (INT_HDR*)calloc(1, sizeof(INT_HDR));
 	//    assert( hdr);
@@ -144,12 +143,12 @@ int CInt::get_int_hdr(FILE *fp, INT_HDR *hdr)
 		if ('[' == *s1)
 		{
 			assert(1 == rc);
-			if (!COMPARE("[Raster]", s1)) clause = RASTER;
-			elif(!COMPARE("[ID]", s1)) clause = ID;
-			elif(!COMPARE("[Photometry]",s1)) clause = PHOTOMETRY;
+			if (!COMPARE("[Raster]", s1)) clause = CLAUSE::RASTER;
+			elif(!COMPARE("[ID]", s1)) clause = CLAUSE::ID;
+			elif(!COMPARE("[Photometry]",s1)) clause = CLAUSE::PHOTOMETRY;
 			elif(!COMPARE("[End]", s1)) break;
-			elif(!COMPARE("[Encoding]",s1)) clause = ENCODING;
-			elif(!COMPARE("[Origin]",s1)) clause = ORIGIN;
+			elif(!COMPARE("[Encoding]",s1)) clause = CLAUSE::ENCODING;
+			elif(!COMPARE("[Origin]",s1)) clause = CLAUSE::ORIGIN;
 			else
 			{
 				free(hdr);
@@ -160,10 +159,10 @@ int CInt::get_int_hdr(FILE *fp, INT_HDR *hdr)
 
 		switch (clause)
 		{
-		case BODY:
+		case CLAUSE::BODY:
 			free(hdr);
 			return NULL;
-		case ENCODING:
+		case CLAUSE::ENCODING:
 			if (!(COMPARE("imageParts:",s1)))
 				(*hdr).imageparts = atoi(s2);
 			elif(!(COMPARE("interleave:",s1)));
@@ -185,7 +184,7 @@ int CInt::get_int_hdr(FILE *fp, INT_HDR *hdr)
 				return NULL;
 			}
 			break;
-		case ID:
+		case CLAUSE::ID:
 			if (!COMPARE("format:", s1))
 			{
 				if (!COMPARE("internal", s2));
@@ -203,7 +202,7 @@ int CInt::get_int_hdr(FILE *fp, INT_HDR *hdr)
 				return NULL;
 			}
 			break;
-		case RASTER:
+		case CLAUSE::RASTER:
 			if (!COMPARE("pixels:", s1))
 				(*hdr).pixels = atoi(s2);
 			elif(!COMPARE("scanlines:", s1))
@@ -232,7 +231,7 @@ int CInt::get_int_hdr(FILE *fp, INT_HDR *hdr)
 				return NULL;
 			}
 			break;
-		case PHOTOMETRY:
+		case CLAUSE::PHOTOMETRY:
 			if (!(COMPARE("name:",s1)))
 			{
 				if (COMPARE("REV_",s2))
@@ -252,7 +251,7 @@ int CInt::get_int_hdr(FILE *fp, INT_HDR *hdr)
 				return NULL;
 			}
 			break;
-		case ORIGIN:
+		case CLAUSE::ORIGIN:
 			if (!COMPARE("units:",s1))
 			{
 				if (!COMPARE("centimeters",s2))
@@ -397,7 +396,7 @@ int CInt::IntHeader2TiffHeader()
 	return 1;
 }
 
-int CInt::ReadIntImage(FILE *file, int Width, int Length, int samplePerPixel, int bitsPerSample)
+int CInt::ReadIntImage(FILE* file, int Width, int Length, int samplePerPixel, int bitsPerSample)
 {
 	LPBYTE lpTempR, lpTempG, lpTempB, lpTempK;
 	int ReadSize = Width * bitsPerSample / 8;
@@ -511,10 +510,10 @@ int CInt::ReadIntImage(FILE *file, int Width, int Length, int samplePerPixel, in
 	return 1;
 }
 
-int CInt::put_int_hdr(FILE *fp, INT_HDR* int_hdr, char* ph_str)
+int CInt::put_int_hdr(FILE* fp, INT_HDR* int_hdr, char* ph_str)
 {
 	int    i;
-	char    *p, buf[512];
+	char* p, buf[512];
 
 	p = buf;
 	p += sprintf(p, "[ID]\n");
@@ -573,7 +572,7 @@ int CInt::put_int_hdr(FILE *fp, INT_HDR* int_hdr, char* ph_str)
 	return 1;
 }
 
-int CInt::WriteIntImage(FILE *file)
+int CInt::WriteIntImage(FILE* file)
 {
 	LPBYTE lpTemp, lpTempR, lpTempG, lpTempB, lpTempK;
 	LPBYTE lpImageBuf = m_Tiff.GetImageBuf();
@@ -674,13 +673,14 @@ int CInt::Read_PGM(LPCTSTR Inupt, LPCTSTR Output)
 	getline(fin, tempstr, (char)0x0A);
 	// 		cout << tempstr;
 
-	char *lpBuf = new char[Width * Length * 4];
-	fin.read(lpBuf, Width * Length * 4);
+	int BufSize = Width * Length * 4;
+	char* lpBuf = new char[BufSize];
+	fin.read(lpBuf, BufSize);
 	fin.close();
 
 	m_Tiff.CreateNew(Width, Length, 600, 4, 8);
 	TiffHeader2IntHeader();
-	memcpy(m_Tiff.GetImageBuf(), lpBuf, Width*Length * 4);
+	memcpy(m_Tiff.GetImageBuf(), lpBuf, BufSize);
 
 	delete[]lpBuf;
 	SaveFile(Output);
@@ -705,12 +705,13 @@ int CInt::PGM2Tiff(LPCTSTR Inupt, LPCTSTR Output)
 	getline(fin, tempstr, (char)0x0A);
 	// 		cout << tempstr;
 
-	char *lpBuf = new char[Width * Length * 4];
-	fin.read(lpBuf, Width * Length * 4);
+	int BufSize = Width * Length * 4;
+	char* lpBuf = new char[BufSize];
+	fin.read(lpBuf, BufSize);
 	fin.close();
 
 	m_Tiff.CreateNew(Width, Length, 600, 4, 8);
-	memcpy(m_Tiff.GetImageBuf(), lpBuf, Width*Length * 4);
+	memcpy(m_Tiff.GetImageBuf(), lpBuf, BufSize);
 	m_Tiff.SaveFile(Output);
 	delete[]lpBuf;
 

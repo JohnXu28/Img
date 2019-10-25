@@ -1,9 +1,9 @@
 #pragma once
 #include <Tiff_STL3\Src\Tiff_STL3.h>
 
-enum PGM_format
+enum class PGM
 {
-	PGM_UnKnown,
+	P0,//UnKnown,
 	P1,//1bit/pixel b&w image, ASCII encoded, pixel values are separated by space
 	P2,//8bit/pixel gray image, ASCII encoded, pixel values are separated by space
 	P3,//8bit/pixel RGB image, ASCII encoded, pixel values are separated by space
@@ -29,6 +29,6 @@ public:
 	CTiff *m_lpTiff;	
 private:
 
-	PGM_format m_format;
+	PGM m_format;
 	string m_FileName;
 };

@@ -18,17 +18,25 @@
 #define COMPARE( x, y)  strncmp( x, y, strlen(x))
 #define elif else if
 
-enum PHOTOMETRY{
-	kLinear	, 
-	grayLinear, 
-	rgbLinear, 
-	cmykLinear, 
-	faxlab, 
-	yccLinear, 
-	cielab,
-	unknownint		= 0xffff
+enum class PHOTOMETRY{
+	ekLinear	, 
+	egrayLinear, 
+	ergbLinear, 
+	ecmykLinear, 
+	efaxlab, 
+	eyccLinear, 
+	ecielab,
+	eunknownint		= 0xffff
 };
 
+#define kLinear			PHOTOMETRY::ekLinear
+#define grayLinear		PHOTOMETRY::egrayLinear
+#define rgbLinear		PHOTOMETRY::ergbLinear
+#define cmykLinear		PHOTOMETRY::ecmykLinear
+#define faxlab			PHOTOMETRY::efaxlab
+#define yccLinear		PHOTOMETRY::eyccLinear
+#define cielab			PHOTOMETRY::ecielab
+#define unknownint		PHOTOMETRY::eunknownint
 
 enum UNITS{
 	UNKNOWN, 
