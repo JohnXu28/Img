@@ -67,7 +67,8 @@ struct _int_hdr {
 }   ;
 
 
-typedef struct _int_hdr INT_HDR;
+//typedef struct _int_hdr INT_HDR;
+using  INT_HDR = struct _int_hdr;
 
 class CInt:public CBase  //Xerox format
 {
