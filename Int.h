@@ -75,7 +75,7 @@ class CInt:public CBase  //Xerox format
 public:
 	virtual int Initial();
 	virtual int main();
-	virtual char* Name(){return "CInt";};
+	virtual char* Name(){return (char*)"CInt";};
 	int ReadTiff(LPCTSTR FileName);
 	int SaveTiff(LPCTSTR FileName);
 	int ReadFile(LPCTSTR FileName);
