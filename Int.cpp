@@ -387,11 +387,11 @@ int CInt::IntHeader2TiffHeader()
 
 	switch (hdr.photometry)
 	{
-	case kLinear:		m_Tiff.SetTag(PhotometricInterpretation, Short, 1, 0);; break;
-	case rgbLinear:		m_Tiff.SetTag(PhotometricInterpretation, Short, 1, 2);; break;
-	case cmykLinear:	m_Tiff.SetTag(PhotometricInterpretation, Short, 1, 5);; break;
-	case cielab:		m_Tiff.SetTag(PhotometricInterpretation, Short, 1, 8);; break;
-	default:			m_Tiff.SetTag(PhotometricInterpretation, Short, 1, 2);; break;
+	case kLinear:		m_Tiff.SetTag(PhotometricInterpretation, Short, 1, 0); break;
+	case rgbLinear:		m_Tiff.SetTag(PhotometricInterpretation, Short, 1, 2); break;
+	case cmykLinear:	m_Tiff.SetTag(PhotometricInterpretation, Short, 1, 5); break;
+	case cielab:		m_Tiff.SetTag(PhotometricInterpretation, Short, 1, 8); break;
+	default:			m_Tiff.SetTag(PhotometricInterpretation, Short, 1, 2); break;
 	}
 	return 1;
 }
